@@ -1,6 +1,11 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"github.com/Lincoln-a-Bot/GoPost/internal/utils"
+	"gorm.io/gorm"
+)
+
+// User struct
 
 type User struct {
 	ID       uint   `gorm:"primaryKey"`
@@ -9,10 +14,17 @@ type User struct {
 	Email    string `gorm:"unique;not null"`
 }
 
+// Function to create a user, Hashing the password and saving to DB
 func CreateUser(db *gorm.DB, Username string, Password string, Email string) error {
+
+	HashPassword, err := utils.HashPassword(Password)
+	if err != nil {
+		return err
+	}
+
 	user := User{
 		Username: Username,
-		Password: Password,
+		Password: HashPassword,
 		Email:    Email,
 	}
 
@@ -20,4 +32,13 @@ func CreateUser(db *gorm.DB, Username string, Password string, Email string) err
 		return err
 	}
 	return nil
+}
+
+// Function to get a user from the DB
+func GetUser(db *gorm.DB, Username string) (*User, error) {
+	var user User
+	if err := db.Where("username = ?", Username).First(&user).Error; err != nil {
+		return nil, err
+	}
+	return &user, nil
 }

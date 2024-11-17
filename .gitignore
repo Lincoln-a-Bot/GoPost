@@ -1,3 +1,4 @@
 .air.toml
 database.sqlite
 *.log
+/tmp
