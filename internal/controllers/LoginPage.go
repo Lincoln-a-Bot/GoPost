@@ -8,9 +8,8 @@ import (
 )
 
 func LoginPage(c echo.Context) error {
-	// Retrieve the error message from the query parameter
-	errorMessage := c.QueryParam("error")
+
 	// Pass the error message to the template
-	component := templates.LoginPage(errorMessage)
+	component := templates.LoginPage()
 	return component.Render(context.Background(), c.Response().Writer)
 }

@@ -51,11 +51,13 @@ func main() {
 		// Validate the credentials
 		CheckLogin := services.CheckLogin(db, Username, Password)
 		if CheckLogin {
-			return c.Redirect(302, "/")
+			// Set the HX-Redirect header to redirect the client
+			c.Response().Header().Set("HX-Redirect", "/")
+			return nil
 		}
+		//htmx only accepts status code 200, so returning 200 and not a 401 StatusUnauthorized
+		return c.HTML(http.StatusOK, "Invalid login")
 
-		// On invalid login, redirect back to /login with the error message as a query parameter
-		return c.HTML(400, "<div>Invalid login</div>")
 	})
 
 	// Starting server
